@@ -16,6 +16,21 @@ pnpm workspace monorepo using TypeScript. Each package manages its own dependenc
 - **API codegen**: Orval (from OpenAPI spec)
 - **Build**: esbuild (CJS bundle)
 
+## Artifacts
+
+### Portfolio Website (`artifacts/portfolio`)
+- **Type**: React + Vite (frontend-only, no backend)
+- **Preview path**: `/`
+- **Description**: Professional portfolio for a Customer Support Specialist / Subject Matter Expert
+- **Features**:
+  - Single-page with smooth scroll navigation
+  - Deep navy color scheme with gold accents
+  - Framer Motion scroll animations
+  - Sections: Hero, About, Experience, Skills, Achievements, Contact, Footer
+  - Contact form with react-hook-form + zod validation
+  - Fully responsive (mobile + desktop)
+- **Key file**: `artifacts/portfolio/src/pages/home.tsx`
+
 ## Key Commands
 
 - `pnpm run typecheck` — full typecheck across all packages
