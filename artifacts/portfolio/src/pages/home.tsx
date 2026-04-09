@@ -259,9 +259,11 @@ export default function Home() {
               <Button size="lg" className="h-14 px-8 text-base bg-primary text-primary-foreground hover:bg-primary/90" onClick={() => scrollTo('#contact')}>
                 Contact Me <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
-              <Button size="lg" variant="outline" className="h-14 px-8 text-base border-border hover:bg-card" onClick={() => scrollTo('#contact')}>
-                Download Resume <Download className="ml-2 h-5 w-5" />
-              </Button>
+              <a href={`${import.meta.env.BASE_URL}resume.pdf`} download="Vidyadhar_Jabade_Resume.pdf">
+                <Button size="lg" variant="outline" className="h-14 px-8 text-base border-border hover:bg-card">
+                  Download Resume <Download className="ml-2 h-5 w-5" />
+                </Button>
+              </a>
             </motion.div>
           </motion.div>
         </div>
