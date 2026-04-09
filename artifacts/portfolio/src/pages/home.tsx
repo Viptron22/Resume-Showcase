@@ -35,7 +35,6 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import emailjs from '@emailjs/browser';
 
 const contactFormSchema = z.object({
   name: z.string().min(2, "Name is required"),
@@ -80,11 +79,9 @@ export default function Home() {
   });
 
   async function onSubmit(data: ContactFormValues) {
-    const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
-    const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
-    const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+    const accessKey = import.meta.env.VITE_WEB3FORMS_KEY;
 
-    if (!serviceId || !templateId || !publicKey) {
+    if (!accessKey) {
       toast({
         title: "Configuration Error",
         description: "Email service is not configured yet. Please contact me directly at jabadevidyadhar@gmail.com",
@@ -94,28 +91,34 @@ export default function Home() {
     }
 
     try {
-      const result = await emailjs.send(
-        serviceId,
-        templateId,
-        {
-          from_name: data.name,
-          from_email: data.email,
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          access_key: accessKey,
+          name: data.name,
+          email: data.email,
           message: data.message,
-          reply_to: data.email,
-        },
-        publicKey
-      );
-      console.log("EmailJS success:", result);
-      toast({
-        title: "Message Sent Successfully",
-        description: "Thank you for reaching out. I will get back to you shortly.",
+          subject: `New Portfolio Message from ${data.name}`,
+        }),
       });
-      form.reset();
+
+      const result = await response.json();
+
+      if (result.success) {
+        toast({
+          title: "Message Sent Successfully",
+          description: "Thank you for reaching out. I will get back to you shortly.",
+        });
+        form.reset();
+      } else {
+        throw new Error(result.message || "Submission failed");
+      }
     } catch (error: any) {
-      console.error("EmailJS error:", error?.status, error?.text, error);
+      console.error("Web3Forms error:", error);
       toast({
         title: "Failed to Send Message",
-        description: `Error: ${error?.text || "Unknown error"}. Please email me directly at jabadevidyadhar@gmail.com`,
+        description: "Something went wrong. Please email me directly at jabadevidyadhar@gmail.com",
         variant: "destructive",
       });
     }
