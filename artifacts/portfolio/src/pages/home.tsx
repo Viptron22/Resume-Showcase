@@ -35,6 +35,7 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import emailjs from '@emailjs/browser';
 
 const contactFormSchema = z.object({
   name: z.string().min(2, "Name is required"),
@@ -78,13 +79,44 @@ export default function Home() {
     }
   });
 
-  function onSubmit(data: ContactFormValues) {
-    console.log("Form submitted:", data);
-    toast({
-      title: "Message Sent Successfully",
-      description: "Thank you for reaching out. I will get back to you shortly.",
-    });
-    form.reset();
+  async function onSubmit(data: ContactFormValues) {
+    const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+    const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+    const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+
+    if (!serviceId || !templateId || !publicKey) {
+      toast({
+        title: "Configuration Error",
+        description: "Email service is not configured yet. Please contact me directly at jabadevidyadhar@gmail.com",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      await emailjs.send(
+        serviceId,
+        templateId,
+        {
+          from_name: data.name,
+          from_email: data.email,
+          message: data.message,
+          to_email: "jabadevidyadhar@gmail.com",
+        },
+        publicKey
+      );
+      toast({
+        title: "Message Sent Successfully",
+        description: "Thank you for reaching out. I will get back to you shortly.",
+      });
+      form.reset();
+    } catch (error) {
+      toast({
+        title: "Failed to Send Message",
+        description: "Something went wrong. Please try again or email me directly at jabadevidyadhar@gmail.com",
+        variant: "destructive",
+      });
+    }
   }
 
   const navLinks = [
