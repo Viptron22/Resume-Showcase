@@ -69,6 +69,35 @@ export default function Home() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const handleResumeDownload = async () => {
+    try {
+      const response = await fetch(`${import.meta.env.BASE_URL}resume.pdf`);
+      if (!response.ok) {
+        toast({
+          title: "Resume Not Available",
+          description: "The resume file is not available yet. Please contact me directly at jabadevidyadhar@gmail.com",
+          variant: "destructive",
+        });
+        return;
+      }
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'Vidyadhar_Jabade_Resume.pdf';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch {
+      toast({
+        title: "Download Failed",
+        description: "Could not download the resume. Please contact me at jabadevidyadhar@gmail.com",
+        variant: "destructive",
+      });
+    }
+  };
+
   const form = useForm<ContactFormValues>({
     resolver: zodResolver(contactFormSchema),
     defaultValues: {
@@ -259,11 +288,9 @@ export default function Home() {
               <Button size="lg" className="h-14 px-8 text-base bg-primary text-primary-foreground hover:bg-primary/90" onClick={() => scrollTo('#contact')}>
                 Contact Me <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
-              <a href={`${import.meta.env.BASE_URL}resume.pdf`} download="Vidyadhar_Jabade_Resume.pdf">
-                <Button size="lg" variant="outline" className="h-14 px-8 text-base border-border hover:bg-card">
-                  Download Resume <Download className="ml-2 h-5 w-5" />
-                </Button>
-              </a>
+              <Button size="lg" variant="outline" className="h-14 px-8 text-base border-border hover:bg-card" onClick={handleResumeDownload}>
+                Download Resume <Download className="ml-2 h-5 w-5" />
+              </Button>
             </motion.div>
           </motion.div>
         </div>
