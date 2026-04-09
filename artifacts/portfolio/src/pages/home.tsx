@@ -50,8 +50,7 @@ export default function Home() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const heroY = useTransform(scrollY, [0, 500], [0, 150]);
-  const heroOpacity = useTransform(scrollY, [0, 300], [1, 0]);
+  const heroY = useTransform(scrollY, [0, 500], [0, 80]);
 
   useEffect(() => {
     document.title = "Vidyadhar Jabade | Technical Support Specialist";
@@ -259,7 +258,7 @@ export default function Home() {
 
         <div className="container mx-auto px-6 md:px-12 relative z-10">
           <motion.div
-            style={{ y: heroY, opacity: heroOpacity }}
+            style={{ y: heroY }}
             initial="hidden"
             animate="visible"
             variants={staggerContainer}
