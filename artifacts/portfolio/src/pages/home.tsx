@@ -94,26 +94,28 @@ export default function Home() {
     }
 
     try {
-      await emailjs.send(
+      const result = await emailjs.send(
         serviceId,
         templateId,
         {
           from_name: data.name,
           from_email: data.email,
           message: data.message,
-          to_email: "jabadevidyadhar@gmail.com",
+          reply_to: data.email,
         },
         publicKey
       );
+      console.log("EmailJS success:", result);
       toast({
         title: "Message Sent Successfully",
         description: "Thank you for reaching out. I will get back to you shortly.",
       });
       form.reset();
-    } catch (error) {
+    } catch (error: any) {
+      console.error("EmailJS error:", error?.status, error?.text, error);
       toast({
         title: "Failed to Send Message",
-        description: "Something went wrong. Please try again or email me directly at jabadevidyadhar@gmail.com",
+        description: `Error: ${error?.text || "Unknown error"}. Please email me directly at jabadevidyadhar@gmail.com`,
         variant: "destructive",
       });
     }
